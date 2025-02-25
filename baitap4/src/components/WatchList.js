@@ -3,11 +3,14 @@ import watches from "../Data";
 
 export default function WatchList() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState("asc");
 
   // Lọc danh sách đồng hồ theo từ khóa tìm kiếm
-  const filteredWatches = watches.filter((watch) =>
-    watch.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredWatches = watches
+    .filter((watch) =>
+      watch.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => (sortOrder === "asc" ? a.price - b.price : b.price - a.price));
 
   return (
     <div className="watch-list">
@@ -19,6 +22,14 @@ export default function WatchList() {
         onChange={(e) => setSearchTerm(e.target.value)}
         className="search-input"
       />
+      <select
+        value={sortOrder}
+        onChange={(e) => setSortOrder(e.target.value)}
+        className="sort-select"
+      >
+        <option value="asc">Giá thấp đến cao</option>
+        <option value="desc">Giá cao đến thấp</option>
+      </select>
       <div className="watch-container">
         {filteredWatches.length > 0 ? (
           filteredWatches.map((watch) => (
@@ -28,7 +39,7 @@ export default function WatchList() {
               <p>{watch.size} mm</p>
               <p className="price">{watch.price.toLocaleString()} ₫</p>
               <div className="watch-rating">
-                <span className="star" >&#9733;</span> {watch.review} • Đã bán {watch.sold}
+                <span className="star">&#9733;</span> {watch.review} • Đã bán {watch.sold}
               </div>
             </div>
           ))
