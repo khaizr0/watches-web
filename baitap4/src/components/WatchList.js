@@ -12,7 +12,6 @@ export default function WatchList() {
   return (
     <div className="watch-list">
       <h1>Danh sách đồng hồ</h1>
-      {/* Ô tìm kiếm */}
       <input
         type="text"
         placeholder="Tìm kiếm đồng hồ..."
@@ -28,6 +27,9 @@ export default function WatchList() {
               <h3>{watch.name}</h3>
               <p>{watch.size} mm</p>
               <p className="price">{watch.price.toLocaleString()} ₫</p>
+              <div className="watch-rating">
+                <span className="star" >&#9733;</span> {watch.review} • Đã bán {watch.sold}
+              </div>
             </div>
           ))
         ) : (
