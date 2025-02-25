@@ -7,9 +7,9 @@ const watches = [
     material: "Resin",
     size: 45,
     price: 3500000,
-    image: "1.webp",
     review: 4.5,
     sold: 1200,
+    image: "1.webp",
   },
   {
     id: 2,
@@ -19,9 +19,9 @@ const watches = [
     material: "Stainless Steel",
     size: 41,
     price: 300000000,
-    image: "2.webp",
     review: 5.0,
     sold: 800,
+    image: "2.webp",
   },
   {
     id: 3,
@@ -31,9 +31,9 @@ const watches = [
     material: "Stainless Steel",
     size: 40,
     price: 10000000,
-    image: "3.webp",
     review: 4.7,
     sold: 1500,
+    image: "3.webp",
   },
   {
     id: 4,
@@ -43,9 +43,9 @@ const watches = [
     material: "Aluminum",
     size: 45,
     price: 12000000,
-    image: "4.jpg",
     review: 4.6,
     sold: 5000,
+    image: "4.jpg",
   },
   {
     id: 5,
@@ -55,9 +55,9 @@ const watches = [
     material: "Stainless Steel",
     size: 40,
     price: 15000000,
-    image: "5.jpg",
     review: 4.8,
     sold: 900,
+    image: "5.jpg",
   },
   {
     id: 6,
@@ -67,9 +67,9 @@ const watches = [
     material: "Stainless Steel",
     size: 42,
     price: 200000000,
-    image: "6.webp",
     review: 5.0,
     sold: 600,
+    image: "6.webp",
   },
   {
     id: 7,
@@ -79,9 +79,9 @@ const watches = [
     material: "Titanium",
     size: 44,
     price: 180000000,
-    image: "7.webp",
     review: 4.9,
     sold: 700,
+    image: "7.webp",
   },
   {
     id: 8,
@@ -91,9 +91,9 @@ const watches = [
     material: "Stainless Steel",
     size: 44,
     price: 7000000,
-    image: "8.png",
     review: 4.3,
     sold: 2500,
+    image: "8.png",
   },
   {
     id: 9,
@@ -103,9 +103,9 @@ const watches = [
     material: "Aluminum",
     size: 44,
     price: 8000000,
-    image: "9.png",
     review: 4.5,
     sold: 3200,
+    image: "9.png",
   },
   {
     id: 10,
@@ -115,11 +115,10 @@ const watches = [
     material: "Titanium",
     size: 47,
     price: 15000000,
-    image: "10.png",
     review: 4.7,
     sold: 1800,
+    image: "10.png",
   },
 ];
-
 
 export default watches;

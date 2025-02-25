@@ -45,11 +45,10 @@
   text-align: left;
   background-color: #fff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .watch-card img:hover {
-  transform: translateY(-3px);
+  transform: translateY(-5px);
 }
 
 /* Ảnh đồng hồ */
@@ -59,6 +58,7 @@
   object-fit: scale-down;
   margin: 0 auto 10px;
   display: block;
+  transition: transform 0.2s ease-in-out;
 }
 
 /* Tên đồng hồ */
