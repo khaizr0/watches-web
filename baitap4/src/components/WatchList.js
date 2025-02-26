@@ -1,11 +1,11 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import watches from "../Data";
 
-export default function WatchList() {
+function WatchList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
 
-  // Lọc danh sách đồng hồ theo từ khóa tìm kiếm
   const filteredWatches = watches
     .filter((watch) =>
       watch.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -35,7 +35,7 @@ export default function WatchList() {
           filteredWatches.map((watch) => (
             <div className="watch-card" key={watch.id}>
               <img src={`/images/${watch.image}`} alt={watch.name} />
-              <h3>{watch.name}</h3>
+              <h3><Link to={`/watch/${watch.id}`}>{watch.name}</Link></h3>
               <p>{watch.size} mm</p>
               <p className="price">{watch.price.toLocaleString()} ₫</p>
               <div className="watch-rating">
@@ -50,3 +50,5 @@ export default function WatchList() {
     </div>
   );
 }
+
+export default WatchList;
