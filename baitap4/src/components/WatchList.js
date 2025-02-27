@@ -139,6 +139,7 @@ function WatchList() {
         <option value="3000">Trên 3000</option>
       </select>
       <button onClick={resetFilters} className="reset-button">Bỏ chọn</button>
+      <Link to="/add" className="add-button">Thêm sản phẩm mới</Link>
       <div className="watch-container">
         {filteredWatches.length > 0 ? (
           filteredWatches.map((watch) => (
