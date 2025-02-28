@@ -1,16 +1,22 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import watches from "../Data";
+import watchesData from "../Data";
 
 export default function WatchListDelete() {
-  const [watchList] = useState(watches);
+  // Khởi tạo state với danh sách sản phẩm
+  const [watches, setWatches] = useState(watchesData);
+
+  const handleRemove = (id) => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
+      setWatches((prevWatches) => prevWatches.filter((watch) => watch.id !== id));
+    }
+  };
 
   return (
     <div className="watch-list">
       <h1>Chọn sản phẩm để xóa</h1>
       <div className="watch-container">
-        {watchList.length > 0 ? (
-          watchList.map((watch) => (
+        {watches.length > 0 ? (
+          watches.map((watch) => (
             <div className="watch-card" key={watch.id}>
               <img src={`/images/${watch.image}`} alt={watch.name} />
               <h3>{watch.name}</h3>
@@ -19,9 +25,9 @@ export default function WatchListDelete() {
               <div className="watch-rating">
                 <span className="star">&#9733;</span> {watch.review} • Đã bán {watch.sold}
               </div>
-              <Link to={`/watch/${watch.id}/delete`} className="action-button delete">
+              <button onClick={() => handleRemove(watch.id)} className="action-button delete">
                 Xóa
-              </Link>
+              </button>
             </div>
           ))
         ) : (
