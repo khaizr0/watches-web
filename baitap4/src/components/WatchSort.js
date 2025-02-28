@@ -17,7 +17,7 @@ export default function WatchSort() {
     (brand === "all" || watch.brand === brand) &&
     (type === "all" || watch.type === type) &&
     (material === "all" || watch.material === material) &&
-    (size === "all" || watch.size >= parseInt(size)) &&
+    (size === "all" || watch.size === parseInt(size)) &&
     (priceRange === "all" ||
       (priceRange === "low" ? watch.price < 100000000 : watch.price >= 100000000)) &&
     (review === "all" || watch.review >= parseInt(review)) &&
