@@ -6,10 +6,9 @@ import WatchList from "./components/WatchList";
 import WatchFind from "./components/WatchFind";
 import WatchSort from "./components/WatchSort";
 import WatchDetail from "./components/WatchDetail";
-import WatchEdit from "./components/WatchEdit";
 import WatchAdd from "./components/WatchAdd";
-import WatchListUpdate from "./components/WatchListUpdate";
-import WatchListDelete from "./components/WatchListDelete";
+import WatchUpdate from "./components/WatchUpdate";
+import WatchDelete from "./components/WatchDelete";
 
 export default function App() {
   return (
@@ -20,10 +19,9 @@ export default function App() {
         <Route path="/find" element={<WatchFind />} />
         <Route path="/sort" element={<WatchSort />} />
         <Route path="/watch/:id" element={<WatchDetail />} />
-        <Route path="/watch/:id/edit" element={<WatchEdit />} />
         <Route path="/add" element={<WatchAdd />} />
-        <Route path="/update" element={<WatchListUpdate />} />
-        <Route path="/delete" element={<WatchListDelete />} />
+        <Route path="/update" element={<WatchUpdate />} />
+        <Route path="/delete" element={<WatchDelete />} />
       </Routes>
     </Router>
   );

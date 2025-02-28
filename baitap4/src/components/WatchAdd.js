@@ -1,26 +1,49 @@
 import React, { useState } from "react";
-import watches from "../Data";
+import { Link } from "react-router-dom";
+import watchesData from "../Data";
 
 export default function WatchAdd() {
-  const [name, setName] = useState("");
-  const [brand, setBrand] = useState("");
-  const [type, setType] = useState("");
-  const [material, setMaterial] = useState("");
-  const [size, setSize] = useState("");
-  const [price, setPrice] = useState("");
-  const [review, setReview] = useState("");
-  const [sold, setSold] = useState("");
-  const [image, setImage] = useState("");
-  const [error, setError] = useState("");
+  // Khởi tạo danh sách đồng hồ từ Data.js
+  const [watchList, setWatchList] = useState([...watchesData]);
+
+  // State lưu thông tin form
+  const [formData, setFormData] = useState({
+    name: "",
+    brand: "",
+    type: "",
+    material: "",
+    size: "",
+    price: "",
+    review: "",
+    sold: "",
+    image: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleAdd = () => {
-    if (!name || !brand || !type || !material || !size || !price || !review || !sold || !image) {
-      setError("Vui lòng nhập đầy đủ thông tin.");
+    const { name, brand, type, material, size, price, review, sold, image } =
+      formData;
+
+    if (
+      !name ||
+      !brand ||
+      !type ||
+      !material ||
+      !size ||
+      !price ||
+      !review ||
+      !sold ||
+      !image
+    ) {
+      alert("Vui lòng nhập đầy đủ thông tin.");
       return;
     }
 
     const newWatch = {
-      id: watches.length + 1,
+      id: watchList.length + 1,
       name,
       brand,
       type,
@@ -32,27 +55,116 @@ export default function WatchAdd() {
       image,
     };
 
-    watches.push(newWatch);
-
-    window.location.href = "/";
+    setWatchList([...watchList, newWatch]);
+    // Reset lại form
+    setFormData({
+      name: "",
+      brand: "",
+      type: "",
+      material: "",
+      size: "",
+      price: "",
+      review: "",
+      sold: "",
+      image: "",
+    });
   };
 
   return (
     <div>
       <h2>Thêm sản phẩm mới</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      
-      <input type="text" placeholder="Tên sản phẩm" value={name} onChange={(e) => setName(e.target.value)} />
-      <input type="text" placeholder="Thương hiệu" value={brand} onChange={(e) => setBrand(e.target.value)} />
-      <input type="text" placeholder="Loại" value={type} onChange={(e) => setType(e.target.value)} />
-      <input type="text" placeholder="Chất liệu" value={material} onChange={(e) => setMaterial(e.target.value)} />
-      <input type="number" placeholder="Kích thước" value={size} onChange={(e) => setSize(e.target.value)} />
-      <input type="number" placeholder="Giá" value={price} onChange={(e) => setPrice(e.target.value)} />
-      <input type="number" placeholder="Đánh giá" value={review} onChange={(e) => setReview(e.target.value)} />
-      <input type="number" placeholder="Số lượng bán" value={sold} onChange={(e) => setSold(e.target.value)} />
-      <input type="text" placeholder="Hình ảnh" value={image} onChange={(e) => setImage(e.target.value)} />
-      
-      <button onClick={handleAdd}>Thêm</button>
+      <div>
+        <input
+          type="text"
+          name="name"
+          placeholder="Tên sản phẩm"
+          value={formData.name}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="brand"
+          placeholder="Thương hiệu"
+          value={formData.brand}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="type"
+          placeholder="Loại"
+          value={formData.type}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="material"
+          placeholder="Chất liệu"
+          value={formData.material}
+          onChange={handleChange}
+        />
+        <input
+          type="number"
+          name="size"
+          placeholder="Kích thước"
+          value={formData.size}
+          onChange={handleChange}
+        />
+        <input
+          type="number"
+          name="price"
+          placeholder="Giá"
+          value={formData.price}
+          onChange={handleChange}
+        />
+        <input
+          type="number"
+          name="review"
+          placeholder="Đánh giá"
+          value={formData.review}
+          onChange={handleChange}
+        />
+        <input
+          type="number"
+          name="sold"
+          placeholder="Số lượng bán"
+          value={formData.sold}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="image"
+          placeholder="Hình ảnh (tên file)"
+          value={formData.image}
+          onChange={handleChange}
+        />
+        <button onClick={handleAdd}>Thêm</button>
+      </div>
+
+      <div className="watch-list">
+        <h1>Danh sách đồng hồ</h1>
+        <div className="watch-container">
+          {watchList.length > 0 ? (
+            watchList.map((watch) => (
+              <div className="watch-card" key={watch.id}>
+                <img src={`/images/${watch.image}`} alt={watch.name} />
+                <h3>
+                  <Link to={`/watch/${watch.id}`}>{watch.name}</Link>
+                </h3>
+                <p>{watch.size} mm</p>
+                <p className="price">
+                  {watch.price.toLocaleString()} ₫
+                </p>
+                <div className="watch-rating">
+                  <span className="star">&#9733;</span> {watch.review} • Đã bán{" "}
+                  {watch.sold}
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>Không tìm thấy sản phẩm</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

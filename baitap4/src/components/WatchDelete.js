@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import watchesData from "../Data";
 
-export default function WatchListDelete() {
-  // Khởi tạo state với danh sách sản phẩm
+export default function WatchDelete() {
   const [watches, setWatches] = useState(watchesData);
 
   const handleRemove = (id) => {
