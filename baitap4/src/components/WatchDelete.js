@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import watches from "../Data";
 
-function WatchDelete() {
+export default function WatchDelete() {
   const { id } = useParams();
   const navigate = useNavigate();
   const watch = watches.find((w) => w.id === parseInt(id));
@@ -62,5 +62,3 @@ function WatchDelete() {
     </div>
   );
 }
-
-export default WatchDelete;

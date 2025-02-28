@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import watches from "../Data";
 
-function WatchFind() {
+export default function WatchFind() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredWatches = watches.filter((watch) =>
@@ -10,7 +10,7 @@ function WatchFind() {
   );
 
   return (
-    <div className="watch-find">
+    <div className="watch-list">
       <h1>Tìm kiếm đồng hồ</h1>
       <input
         type="text"
@@ -41,5 +41,3 @@ function WatchFind() {
     </div>
   );
 }
-
-export default WatchFind;

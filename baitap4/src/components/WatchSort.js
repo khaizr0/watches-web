@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import watches from "../Data";
 
-function WatchSort() {
+export default function WatchSort() {
   const [sortOrder, setSortOrder] = useState("asc");
   const [brand, setBrand] = useState("all");
   const [type, setType] = useState("all");
@@ -40,7 +40,7 @@ function WatchSort() {
   };
 
   return (
-    <div className="watch-sort">
+    <div className="watch-list">
       <h1>Lọc và Sắp xếp đồng hồ</h1>
       <select
         value={sortOrder}
@@ -148,5 +148,3 @@ function WatchSort() {
     </div>
   );
 }
-
-export default WatchSort;

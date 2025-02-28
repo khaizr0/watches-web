@@ -1,3 +1,4 @@
+// App.js
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
@@ -8,6 +9,8 @@ import WatchDetail from "./components/WatchDetail";
 import WatchDelete from "./components/WatchDelete";
 import WatchEdit from "./components/WatchEdit";
 import WatchAdd from "./components/WatchAdd";
+import WatchListUpdate from "./components/WatchListUpdate";
+import WatchListDelete from "./components/WatchListDelete";
 
 export default function App() {
   return (
@@ -21,8 +24,8 @@ export default function App() {
         <Route path="/watch/:id/edit" element={<WatchEdit />} />
         <Route path="/watch/:id/delete" element={<WatchDelete />} />
         <Route path="/add" element={<WatchAdd />} />
-        <Route path="/update" element={<WatchList mode="update" />} />
-        <Route path="/delete" element={<WatchList mode="delete" />} />
+        <Route path="/update" element={<WatchListUpdate />} />
+        <Route path="/delete" element={<WatchListDelete />} />
       </Routes>
     </Router>
   );
