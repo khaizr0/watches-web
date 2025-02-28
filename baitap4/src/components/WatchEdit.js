@@ -1,21 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 import watches from "../Data";
 
 export default function WatchEdit() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const watch = watches.find((w) => w.id === parseInt(id));
 
-  const [name, setName] = useState(watch.name);
-  const [brand, setBrand] = useState(watch.brand);
-  const [type, setType] = useState(watch.type);
-  const [material, setMaterial] = useState(watch.material);
-  const [size, setSize] = useState(watch.size);
-  const [price, setPrice] = useState(watch.price);
-  const [review, setReview] = useState(watch.review);
-  const [sold, setSold] = useState(watch.sold);
-  const [image, setImage] = useState(watch.image);
+  const [name, setName] = useState(watch ? watch.name : "");
+  const [brand, setBrand] = useState(watch ? watch.brand : "");
+  const [type, setType] = useState(watch ? watch.type : "");
+  const [material, setMaterial] = useState(watch ? watch.material : "");
+  const [size, setSize] = useState(watch ? watch.size : "");
+  const [price, setPrice] = useState(watch ? watch.price : "");
+  const [review, setReview] = useState(watch ? watch.review : "");
+  const [sold, setSold] = useState(watch ? watch.sold : "");
+  const [image, setImage] = useState(watch ? watch.image : "");
+
+  if (!watch) return <h2>Không tìm thấy sản phẩm</h2>;
 
   const handleEdit = () => {
     watch.name = name;
@@ -27,7 +28,8 @@ export default function WatchEdit() {
     watch.review = parseFloat(review);
     watch.sold = parseInt(sold);
     watch.image = image;
-    navigate("/");
+    
+    window.location.href = "/";
   };
 
   return (
@@ -43,6 +45,7 @@ export default function WatchEdit() {
       <input type="number" placeholder="Số lượng bán" value={sold} onChange={(e) => setSold(e.target.value)} />
       <input type="text" placeholder="Hình ảnh" value={image} onChange={(e) => setImage(e.target.value)} />
       <button onClick={handleEdit}>Lưu</button>
+      <button onClick={() => (window.location.href = "/")}>Quay lại</button>
     </div>
   );
 }

@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import watches from "../Data";
 
 export default function WatchDelete() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const watch = watches.find((w) => w.id === parseInt(id));
   const [name, setName] = useState(watch ? watch.name : "");
   const [price, setPrice] = useState(watch ? watch.price : "");
@@ -20,7 +19,7 @@ export default function WatchDelete() {
       const index = watches.findIndex((w) => w.id === parseInt(id));
       if (index !== -1) {
         watches.splice(index, 1);
-        navigate("/");
+        window.location.href = "/"; 
       }
     }
   };
@@ -29,7 +28,7 @@ export default function WatchDelete() {
     const index = watches.findIndex((w) => w.id === parseInt(id));
     if (index !== -1) {
       watches[index] = { ...watches[index], name, price, size, review, sold };
-      navigate(`/watch/${id}`);
+      window.location.href = `/watch/${id}`;
     }
   };
 
@@ -58,7 +57,7 @@ export default function WatchDelete() {
       </div>
       <button onClick={handleEdit}>Sửa sản phẩm</button>
       <button onClick={handleDelete}>Xóa sản phẩm</button>
-      <button onClick={() => navigate("/")}>Quay lại danh sách</button>
+      <button onClick={() => (window.location.href = "/")}>Quay lại danh sách</button>
     </div>
   );
 }
