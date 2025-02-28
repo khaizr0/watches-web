@@ -33,8 +33,7 @@ export default function WatchAdd() {
     };
 
     watches.push(newWatch);
-    
-    // Chuyển hướng mà không dùng useNavigate()
+
     window.location.href = "/";
   };
 
