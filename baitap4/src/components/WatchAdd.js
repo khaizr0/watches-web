@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import watchData from "../Data.js";
+import watchesData from "../Data";
 
 export default function WatchAdd() {
-  const [watchList, setWatchList] = useState([...watchData]);
+  // Khởi tạo danh sách đồng hồ từ Data.js
+  const [watchList, setWatchList] = useState([...watchesData]);
+
+  // State lưu thông tin form
   const [formData, setFormData] = useState({
     name: "",
     brand: "",
@@ -15,33 +18,30 @@ export default function WatchAdd() {
     sold: "",
     image: "",
   });
-  const [visibleCount, setVisibleCount] = useState(10);
 
-  useEffect(() => {
-    fetch("http://localhost:3001/api/watches")
-      .then((res) => res.json())
-      .then((data) => setWatchList(data));
-  }, []);
-
-  useEffect(() => {
-    function handleScroll() {
-      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) {
-        setVisibleCount((prev) => prev + 5);
-      }
-    }
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const handleChange = (e) =>
+  const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-  const handleAdd = async () => {
-    const { name, brand, type, material, size, price, review, sold, image } = formData;
-    if (!name || !brand || !type || !material || !size || !price || !review || !sold || !image) {
+  const handleAdd = () => {
+    const { name, brand, type, material, size, price, review, sold, image } =
+      formData;
+
+    if (
+      !name ||
+      !brand ||
+      !type ||
+      !material ||
+      !size ||
+      !price ||
+      !review ||
+      !sold ||
+      !image
+    ) {
       alert("Vui lòng nhập đầy đủ thông tin.");
       return;
     }
+
     const newWatch = {
       id: watchList.length + 1,
       name,
@@ -54,12 +54,9 @@ export default function WatchAdd() {
       sold: parseInt(sold),
       image,
     };
-    await fetch("http://localhost:3001/api/watches", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newWatch),
-    });
+
     setWatchList([...watchList, newWatch]);
+    // Reset lại form
     setFormData({
       name: "",
       brand: "",
@@ -71,26 +68,6 @@ export default function WatchAdd() {
       sold: "",
       image: "",
     });
-  };
-
-  const handleDelete = async (id) => {
-    await fetch(`http://localhost:3001/api/watches/${id}`, {
-      method: "DELETE",
-    });
-    const updatedList = watchList.filter((item) => item.id !== id);
-    setWatchList(updatedList);
-  };
-
-  const handleEdit = async (id, updatedFields) => {
-    await fetch(`http://localhost:3001/api/watches/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedFields),
-    });
-    const updatedList = watchList.map((item) =>
-      item.id === id ? { ...item, ...updatedFields } : item
-    );
-    setWatchList(updatedList);
   };
 
   return (
@@ -166,19 +143,26 @@ export default function WatchAdd() {
       <div className="watch-list">
         <h1>Danh sách đồng hồ</h1>
         <div className="watch-container">
-          {watchList.slice(0, visibleCount).map((watch) => (
-            <div className="watch-card" key={watch.id}>
-              <img src={`/images/${watch.image}`} alt={watch.name} />
-              <h3>
-                <Link to={`/watch/${watch.id}`}>{watch.name}</Link>
-              </h3>
-              <p>{watch.size} mm</p>
-              <p className="price">{watch.price.toLocaleString()} ₫</p>
-              <div className="watch-rating">
-                <span className="star">&#9733;</span> {watch.review} • Đã bán {watch.sold}
+          {watchList.length > 0 ? (
+            watchList.map((watch) => (
+              <div className="watch-card" key={watch.id}>
+                <img src={`/images/${watch.image}`} alt={watch.name} />
+                <h3>
+                  <Link to={`/watch/${watch.id}`}>{watch.name}</Link>
+                </h3>
+                <p>{watch.size} mm</p>
+                <p className="price">
+                  {watch.price.toLocaleString()} ₫
+                </p>
+                <div className="watch-rating">
+                  <span className="star">&#9733;</span> {watch.review} • Đã bán{" "}
+                  {watch.sold}
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p>Không tìm thấy sản phẩm</p>
+          )}
         </div>
       </div>
     </div>
