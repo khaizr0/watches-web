@@ -13,8 +13,8 @@ mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => console.log('✅ Đã kết nối MongoDB Atlas'))
-.catch(err => console.error('❌ Lỗi kết nối MongoDB:', err));
+.then(() => console.log('Đã kết nối MongoDB Atlas'))
+.catch(err => console.error('Lỗi kết nối MongoDB:', err));
 
 // Cấu hình multer để lưu file vào thư mục "uploads"
 const storage = multer.diskStorage({
@@ -108,5 +108,5 @@ app.post('/api/products', upload.single('image'), async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server đang chạy tại http://localhost:${PORT}`);
+  console.log(`server đang chạy tại http://localhost:${PORT}`);
 });
