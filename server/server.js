@@ -49,13 +49,13 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(cors());
 app.use(express.json());
 
-//Lấy danh sách đồng hồ
+// GET endpoint to retrieve all watches
 app.get('/api/watch', async (req, res) => {
   try {
-    const watches = await Watch.find();
+    const watches = await Watch.find({}); // assuming Watch is your Mongoose model
     res.status(200).json(watches);
   } catch (error) {
-    console.error("Lỗi khi lấy danh sách đồng hồ:", error);
+    console.error("Lỗi khi lấy danh sách sản phẩm:", error);
     res.status(500).json({ error: "Internal server error." });
   }
 });
@@ -95,7 +95,7 @@ app.post('/api/watch', upload.single('image'), async (req, res) => {
     const newWatch = new Watch({
       id: newId,
       name,
-      brand,
+brand,
       type,
       material,
       size,
@@ -111,6 +111,78 @@ app.post('/api/watch', upload.single('image'), async (req, res) => {
   } catch (error) {
     console.error("Lỗi khi tạo watch:", error);
     res.status(500).json({ error: "Internal server error." });
+  }
+});
+
+// New PUT endpoint for updating a watch
+app.put('/api/watch/:id', upload.single('image'), async (req, res) => {
+  try {
+    const { name, brand, type, material, size, price, review, sold } = req.body;
+
+    if (!name || !brand || !type || !material || !size || !price || !review || !sold) {
+      return res.status(400).json({ error: "Vui lòng nhập đầy đủ thông tin." });
+    }
+
+    // Build the update payload
+    let updateFields = {
+      name,
+      brand,
+      type,
+      material,
+      size,
+      price,
+      review,
+      sold,
+    };
+
+    // If a new image file is provided, update the image field
+    if (req.file) {
+      const imageUrl = `http://localhost:5000/uploads/${req.file.filename}`;
+      updateFields.image = imageUrl;
+    }
+
+    const updatedWatch = await Watch.findOneAndUpdate(
+      { id: req.params.id },
+      updateFields,
+      { new: true }
+    );
+
+    if (!updatedWatch) {
+      return res.status(404).json({ error: "Không tìm thấy sản phẩm với ID: " + req.params.id });
+    }
+
+    res.status(200).json(updatedWatch);
+  } catch (error) {
+    console.error("Lỗi khi cập nhật watch:", error);
+    res.status(500).json({ error: "Internal server error." });
+  }
+});
+
+// New GET endpoint to retrieve a single watch by ID
+app.get('/api/watch/:id', async (req, res) => {
+  try {
+    const watch = await Watch.findOne({ id: req.params.id });
+    if (!watch) {
+      return res.status(404).json({ error: "Không tìm thấy sản phẩm với ID: " + req.params.id });
+    }
+    res.status(200).json(watch);
+  } catch (error) {
+    console.error("Lỗi khi lấy thông tin watch:", error);
+    res.status(500).json({ error: "Internal server error." });
+  }
+});
+
+app.delete('/api/watch/:id', async (req, res) => {
+  try {
+    // Ensure req.params.id is treated as a string
+    const deletedWatch = await Watch.findOneAndDelete({ id: req.params.id.toString() });
+    if (!deletedWatch) {
+      return res.status(404).json({ success: false, message: "Không tìm thấy sản phẩm với ID: " + req.params.id });
+    }
+    res.status(200).json({ success: true, message: "Sản phẩm đã được xóa", deletedWatch });
+  } catch (error) {
+    console.error("Lỗi khi xóa watch:", error);
+    res.status(500).json({ success: false, message: "Internal server error." });
   }
 });
 

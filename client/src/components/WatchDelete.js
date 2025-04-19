@@ -1,14 +1,37 @@
-import React, { useState } from "react";
-import watchesData from "../Data";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 export default function WatchDelete() {
-  const [watches, setWatches] = useState(watchesData);
+  const [watches, setWatches] = useState([]);
 
-  const handleRemove = (id) => {
+  // Load danh sách sản phẩm từ server thông qua GET endpoint
+  useEffect(() => {
+    fetch("http://localhost:5000/api/watch")
+      .then((res) => {
+        if (!res.ok) throw new Error("Không thể lấy danh sách sản phẩm");
+        return res.json();
+      })
+      .then((data) => setWatches(data))
+      .catch((err) => console.error("Error fetching watches:", err));
+  }, []);
+
+  // Hàm xử lý xóa sản phẩm bằng cách gọi DELETE endpoint
+  const handleRemove = async (id) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
-      setWatches((prevWatches) =>
-        prevWatches.filter((watch) => watch.id !== id)
-      );
+      try {
+        const res = await fetch(`http://localhost:5000/api/watch/${id}`, {
+          method: "DELETE",
+        });
+        if (!res.ok) {
+          const errorData = await res.json();
+          alert("Lỗi xóa: " + errorData.message);
+          return;
+        }
+        // Nếu xóa thành công, cập nhật lại danh sách sản phẩm trong state
+        setWatches((prevWatches) => prevWatches.filter((watch) => watch.id !== id));
+      } catch (error) {
+        console.error("Error deleting watch:", error);
+      }
     }
   };
 
@@ -21,12 +44,12 @@ export default function WatchDelete() {
         {watches.length > 0 ? (
           watches.map((watch) => (
             <div
-              className="border border-gray-300 rounded p-3 bg-white shadow-sm group"
               key={watch.id}
+              className="border border-gray-300 rounded p-3 bg-white shadow-sm group"
             >
               <img
                 className="w-full h-64 object-scale-down mb-2 transition-transform duration-200 hover:-translate-y-1"
-                src={`/images/${watch.image}`}
+                src={watch.image}
                 alt={watch.name}
               />
               <h3 className="text-lg font-semibold text-gray-800 my-2">
