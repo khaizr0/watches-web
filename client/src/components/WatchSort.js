@@ -188,7 +188,7 @@ export default function WatchSort() {
                 onError={(e) => { e.target.onerror = null; e.target.src = "/images/placeholder.png"; }}
               />
               <h3 className="text-lg font-semibold text-gray-800 my-2">
-                <Link to={`/watch/${watch._id}`} className="transition-colors duration-300 group-hover:text-blue-500">
+                <Link to={`/watch/${watch.id}`} className="transition-colors duration-300 group-hover:text-blue-500">
                   {watch.name}
                 </Link>
               </h3>
