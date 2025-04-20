@@ -1,8 +1,17 @@
-import React, { useState } from "react";
+
+
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import watches from "../Data";
+import axios from "axios";
+
+const API_BASE_URL = 'http://localhost:5000';
 
 export default function WatchSort() {
+  const [watches, setWatches] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Các state bộ lọc
   const [sortOrder, setSortOrder] = useState("asc");
   const [brand, setBrand] = useState("all");
   const [type, setType] = useState("all");
@@ -12,21 +21,27 @@ export default function WatchSort() {
   const [review, setReview] = useState("all");
   const [sold, setSold] = useState("all");
 
-  // Lọc sản phẩm theo các tiêu chí đã chọn
-  const filteredWatches = watches.filter((watch) =>
-    (brand === "all" || watch.brand === brand) &&
-    (type === "all" || watch.type === type) &&
-    (material === "all" || watch.material === material) &&
-    (size === "all" || watch.size === parseInt(size)) &&
-    (priceRange === "all" ||
-      (priceRange === "low" ? watch.price < 100000000 : watch.price >= 100000000)) &&
-    (review === "all" || watch.review >= parseInt(review)) &&
-    (sold === "all" || watch.sold >= parseInt(sold))
-  );
+  useEffect(() => {
+    const fetchWatches = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await axios.get(`${API_BASE_URL}/api/watch`);
+        if (response.status === 200) {
+          setWatches(response.data);
+        } else {
+          throw new Error("Lỗi khi tải dữ liệu");
+        }
+      } catch (err) {
+        console.error("Fetch failed:", err);
+        setError(err.message || "Không thể tải dữ liệu.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  filteredWatches.sort((a, b) =>
-    sortOrder === "asc" ? a.price - b.price : b.price - a.price
-  );
+    fetchWatches();
+  }, []);
 
   const resetFilters = () => {
     setSortOrder("asc");
@@ -39,9 +54,31 @@ export default function WatchSort() {
     setSold("all");
   };
 
+  const filteredWatches = watches
+    .filter((watch) =>
+      (brand === "all" || watch.brand === brand) &&
+      (type === "all" || watch.type === type) &&
+      (material === "all" || watch.material === material) &&
+      (size === "all" || watch.size === parseInt(size)) &&
+      (priceRange === "all" ||
+        (priceRange === "low" ? watch.price < 100000000 : watch.price >= 100000000)) &&
+      (review === "all" || watch.review >= parseInt(review)) &&
+      (sold === "all" || watch.sold >= parseInt(sold))
+    )
+    .sort((a, b) =>
+      sortOrder === "asc" ? a.price - b.price : b.price - a.price
+    );
+
+  if (isLoading) {
+    return <p className="text-center text-gray-500">Đang tải sản phẩm...</p>;
+  }
+
+  if (error) {
+    return <p className="text-center text-red-500">Lỗi: {error}</p>;
+  }
+
   return (
     <div className="container mx-auto p-5">
-      <h1 className="text-center text-2xl font-bold mb-5">Lọc và Sắp xếp đồng hồ</h1>
       
       {/* Bộ lọc */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
@@ -138,19 +175,20 @@ export default function WatchSort() {
       >
         Bỏ chọn
       </button>
-      
-      {/* Hiển thị sản phẩm đã lọc */}
+
+      {/* Hiển thị sản phẩm */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
         {filteredWatches.length > 0 ? (
           filteredWatches.map((watch) => (
-            <div className="border border-gray-300 rounded p-3 bg-white shadow-sm group" key={watch.id}>
+            <div className="border border-gray-300 rounded p-3 bg-white shadow-sm group" key={watch._id}>
               <img
                 className="w-full h-64 object-scale-down mb-2 transition-transform duration-200 hover:-translate-y-1"
-                src={`/images/${watch.image}`}
+                src={watch.image}
                 alt={watch.name}
+                onError={(e) => { e.target.onerror = null; e.target.src = "/images/placeholder.png"; }}
               />
               <h3 className="text-lg font-semibold text-gray-800 my-2">
-                <Link to={`/watch/${watch.id}`} className="transition-colors duration-300 group-hover:text-blue-500">
+                <Link to={`/watch/${watch._id}`} className="transition-colors duration-300 group-hover:text-blue-500">
                   {watch.name}
                 </Link>
               </h3>
