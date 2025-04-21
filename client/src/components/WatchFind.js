@@ -2,26 +2,37 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Form, InputGroup } from "react-bootstrap";
 import InfiniteScroll from "react-infinite-scroll-component";
-import watches from "../Data";
 
 export default function WatchFind() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [watches, setWatches] = useState([]);            
   const batchSize = 10;
   const [displayedWatches, setDisplayedWatches] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/watch")
+      .then(res => {
+        if (!res.ok) throw new Error("Lỗi mạng khi lấy watch");
+        return res.json();
+      })
+      .then(data => {
+        setWatches(data);
+        setDisplayedWatches(data.slice(0, batchSize));
+      })
+      .catch(err => console.error(err));
+  }, []);
 
   useEffect(() => {
     const newFiltered = watches.filter((watch) =>
       watch.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setDisplayedWatches(newFiltered.slice(0, batchSize));
-  }, [searchTerm]);
+  }, [searchTerm, watches]);
 
- 
   const filteredWatches = watches.filter((watch) =>
     watch.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Hàm tải thêm dữ liệu khi scroll
   const fetchMoreData = () => {
     const nextItems = filteredWatches.slice(
       displayedWatches.length,
@@ -62,7 +73,7 @@ export default function WatchFind() {
               >
                 <img
                   className="w-full h-64 object-scale-down mb-2 transition-transform duration-200 hover:-translate-y-1"
-                  src={`/images/${watch.image}`}
+                  src={watch.image}
                   alt={watch.name}
                 />
                 <h3 className="text-lg font-semibold text-gray-800 my-2">
@@ -78,7 +89,9 @@ export default function WatchFind() {
                   {watch.price.toLocaleString()} ₫
                 </p>
                 <div className="flex items-center text-xs text-gray-600 mt-1">
-                  <span className="text-yellow-400 mr-1 text-lg">&#9733;</span>{" "}
+                  <span className="text-yellow-400 mr-1 text-lg">
+                    &#9733;
+                  </span>{" "}
                   {watch.review} • Đã bán {watch.sold}
                 </div>
               </div>

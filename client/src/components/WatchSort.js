@@ -1,15 +1,16 @@
-
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const API_BASE_URL = 'http://localhost:5000';
 
 export default function WatchSort() {
   const [watches, setWatches] = useState([]);
+  const [displayedWatches, setDisplayedWatches] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const batchSize = 10;
 
   // Các state bộ lọc
   const [sortOrder, setSortOrder] = useState("asc");
@@ -43,6 +44,27 @@ export default function WatchSort() {
     fetchWatches();
   }, []);
 
+  // Update filtered and sorted watches whenever filters or data changes
+  useEffect(() => {
+    const filtered = watches
+      .filter((watch) =>
+        (brand === "all" || watch.brand === brand) &&
+        (type === "all" || watch.type === type) &&
+        (material === "all" || watch.material === material) &&
+        (size === "all" || watch.size === parseInt(size)) &&
+        (priceRange === "all" ||
+          (priceRange === "low" ? watch.price < 100000000 : watch.price >= 100000000)) &&
+        (review === "all" || watch.review >= parseInt(review)) &&
+        (sold === "all" || watch.sold >= parseInt(sold))
+      )
+      .sort((a, b) =>
+        sortOrder === "asc" ? a.price - b.price : b.price - a.price
+      );
+    
+    // Initialize with first batch
+    setDisplayedWatches(filtered.slice(0, batchSize));
+  }, [watches, brand, type, material, size, priceRange, review, sold, sortOrder]);
+
   const resetFilters = () => {
     setSortOrder("asc");
     setBrand("all");
@@ -54,6 +76,7 @@ export default function WatchSort() {
     setSold("all");
   };
 
+  // Calculate current filtered watches based on filters
   const filteredWatches = watches
     .filter((watch) =>
       (brand === "all" || watch.brand === brand) &&
@@ -68,6 +91,15 @@ export default function WatchSort() {
     .sort((a, b) =>
       sortOrder === "asc" ? a.price - b.price : b.price - a.price
     );
+
+  // Function to fetch more data for infinite scroll
+  const fetchMoreData = () => {
+    const nextItems = filteredWatches.slice(
+      displayedWatches.length, 
+      displayedWatches.length + batchSize
+    );
+    setDisplayedWatches(prev => [...prev, ...nextItems]);
+  };
 
   if (isLoading) {
     return <p className="text-center text-gray-500">Đang tải sản phẩm...</p>;
@@ -176,36 +208,50 @@ export default function WatchSort() {
         Bỏ chọn
       </button>
 
-      {/* Hiển thị sản phẩm */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
-        {filteredWatches.length > 0 ? (
-          filteredWatches.map((watch) => (
-            <div className="border border-gray-300 rounded p-3 bg-white shadow-sm group" key={watch._id}>
-              <img
-                className="w-full h-64 object-scale-down mb-2 transition-transform duration-200 hover:-translate-y-1"
-                src={watch.image}
-                alt={watch.name}
-                onError={(e) => { e.target.onerror = null; e.target.src = "/images/placeholder.png"; }}
-              />
-              <h3 className="text-lg font-semibold text-gray-800 my-2">
-                <Link to={`/watch/${watch.id}`} className="transition-colors duration-300 group-hover:text-blue-500">
-                  {watch.name}
-                </Link>
-              </h3>
-              <p className="text-sm text-gray-600">{watch.size} mm</p>
-              <p className="text-lg text-red-600 font-bold">
-                {watch.price.toLocaleString()} ₫
-              </p>
-              <div className="flex items-center text-xs text-gray-600 mt-1">
-                <span className="text-yellow-400 mr-1 text-lg">&#9733;</span>
-                {watch.review} • Đã bán {watch.sold}
+      {/* Hiển thị sản phẩm với InfiniteScroll */}
+      <InfiniteScroll
+        dataLength={displayedWatches.length}
+        next={fetchMoreData}
+        hasMore={displayedWatches.length < filteredWatches.length}
+        loader={<h4 className="text-center my-4">Đang tải thêm sản phẩm 🔎</h4>}
+        endMessage={
+          <p className="text-center mt-5">
+            <b>Đã tải hết sản phẩm 😅</b>
+          </p>
+        }
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+          {displayedWatches.length > 0 ? (
+            displayedWatches.map((watch) => (
+              <div className="border border-gray-300 rounded p-3 bg-white shadow-sm group" key={watch._id || watch.id}>
+                <img
+                  className="w-full h-64 object-scale-down mb-2 transition-transform duration-200 hover:-translate-y-1"
+                  src={watch.image}
+                  alt={watch.name}
+                  onError={(e) => { e.target.onerror = null; e.target.src = "/images/placeholder.png"; }}
+                />
+                <h3 className="text-lg font-semibold text-gray-800 my-2">
+                  <Link to={`/watch/${watch.id}`} className="transition-colors duration-300 group-hover:text-blue-500">
+                    {watch.name}
+                  </Link>
+                </h3>
+                <p className="text-sm text-gray-600">{watch.size} mm</p>
+                <p className="text-lg text-red-600 font-bold">
+                  {watch.price.toLocaleString()} ₫
+                </p>
+                <div className="flex items-center text-xs text-gray-600 mt-1">
+                  <span className="text-yellow-400 mr-1 text-lg">&#9733;</span>
+                  {watch.review} • Đã bán {watch.sold}
+                </div>
               </div>
-            </div>
-          ))
-        ) : (
-          <p className="text-center text-base text-gray-500 mt-5">Không tìm thấy sản phẩm</p>
-        )}
-      </div>
+            ))
+          ) : (
+            <p className="text-center text-base text-gray-500 mt-5 col-span-full">
+              Không tìm thấy sản phẩm phù hợp với bộ lọc
+            </p>
+          )}
+        </div>
+      </InfiniteScroll>
     </div>
   );
 }

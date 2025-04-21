@@ -33,7 +33,6 @@ const Watch = mongoose.model('watch', watchSchema, 'watchs');
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true, trim: true, lowercase: true },
   password: { type: String, required: true },
-  // Add other fields like email, role, etc. if needed
 });
 
 const User = mongoose.model('User', userSchema);
@@ -60,8 +59,6 @@ const createDefaultAdmin = async () => {
           const adminUser = new User({
               username: DEFAULT_ADMIN_USERNAME,
               password: hashedPassword,
-              // If you added a role field:
-              // role: 'admin'
           });
 
           // Save the user to the database
@@ -80,8 +77,6 @@ const createDefaultAdmin = async () => {
       }
   } catch (error) {
       console.error('Error during default admin user creation:', error);
-      // Depending on the error, you might want to exit the process
-      // process.exit(1);
   }
 };
 
@@ -115,8 +110,8 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // --- Middleware ---
 app.use(cors({
-  origin: 'http://localhost:3000', // Adjust if your frontend runs on a different port/domain
-  credentials: true // Allow cookies to be sent
+  origin: 'http://localhost:3000', 
+  credentials: true
 }));
 app.use(express.json());
 app.use(cookieParser()); // Use cookie-parser middleware
@@ -378,7 +373,6 @@ app.get('/api/watch/:id', async (req, res) => {
 
 app.delete('/api/watch/:id', async (req, res) => {
   try {
-    // Ensure req.params.id is treated as a string
     const deletedWatch = await Watch.findOneAndDelete({ id: req.params.id.toString() });
     if (!deletedWatch) {
       return res.status(404).json({ success: false, message: "Không tìm thấy sản phẩm với ID: " + req.params.id });

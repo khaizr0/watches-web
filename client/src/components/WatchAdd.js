@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function WatchAdd() {
   const [watchList, setWatchList] = useState([]);
+  const [displayedWatches, setDisplayedWatches] = useState([]);
+  const batchSize = 10; // Number of items to load per batch
   const [formData, setFormData] = useState({
     name: "",
     brand: "",
@@ -23,6 +26,8 @@ export default function WatchAdd() {
         if (response.ok) {
           const data = await response.json();
           setWatchList(data);
+          // Initialize displayed watches with first batch
+          setDisplayedWatches(data.slice(0, batchSize));
         } else {
           console.error("Lỗi khi load dữ liệu:", response.statusText);
         }
@@ -33,6 +38,15 @@ export default function WatchAdd() {
 
     loadWatches();
   }, []);
+
+  // Function to fetch more data for infinite scroll
+  const fetchMoreData = () => {
+    const nextItems = watchList.slice(
+      displayedWatches.length,
+      displayedWatches.length + batchSize
+    );
+    setDisplayedWatches(prev => [...prev, ...nextItems]);
+  };
 
   // Xử lý các trường input dạng text/number/select
   const handleChange = (e) => {
@@ -93,7 +107,14 @@ export default function WatchAdd() {
 
       const createdWatch = await response.json();
       // Cập nhật danh sách sản phẩm mới
-      setWatchList([...watchList, createdWatch]);
+      const updatedWatchList = [...watchList, createdWatch];
+      setWatchList(updatedWatchList);
+      
+      // Update displayed watches
+      if (displayedWatches.length < batchSize) {
+        // If we're showing less than a batch, add the new watch to display
+        setDisplayedWatches([...displayedWatches, createdWatch]);
+      }
 
       // Reset lại form; đặt lại type về mặc định là Quartz và image về null
       setFormData({
@@ -219,51 +240,64 @@ export default function WatchAdd() {
         
         <button
           onClick={handleAdd}
-          className="mt-4 w-full bg-blue-500 text-white p-2 rounded-lg"
+          className="mt-4 w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition-colors"
         >
           Thêm
         </button>
       </div>
 
-      {/* Hiển thị danh sách đồng hồ */}
+      {/* Hiển thị danh sách đồng hồ với InfiniteScroll */}
       <div>
         <h1 className="text-center text-2xl font-bold mb-5">Danh sách đồng hồ</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
-          {watchList.length > 0 ? (
-            watchList.map((watch) => (
-              <div
-                className="border border-gray-300 rounded p-3 bg-white shadow-sm group"
-                key={watch.id}
-              >
-                <img
-                  className="w-full h-64 object-scale-down mb-2 transition-transform duration-200 hover:-translate-y-1"
-                  src={watch.image}
-                  alt={watch.name}
-                />
-                <h3 className="text-lg font-semibold text-gray-800 my-2">
-                  <Link
-                    to={`/watch/${watch.id}`}
-                    className="transition-colors duration-300 group-hover:text-blue-500"
-                  >
-                    {watch.name}
-                  </Link>
-                </h3>
-                <p className="text-sm text-gray-600">{watch.size} mm</p>
-                <p className="text-lg text-red-600 font-bold">
-                  {watch.price.toLocaleString()} ₫
-                </p>
-                <div className="flex items-center text-xs text-gray-600 mt-1">
-                  <span className="text-yellow-400 mr-1 text-lg">&#9733;</span>
-                  {watch.review} • Đã bán {watch.sold}
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-center text-base text-gray-500 mt-5">
-              Không tìm thấy sản phẩm
+        
+        <InfiniteScroll
+          dataLength={displayedWatches.length}
+          next={fetchMoreData}
+          hasMore={displayedWatches.length < watchList.length}
+          loader={<h4 className="text-center">Đang tải thêm sản phẩm 🔎</h4>}
+          endMessage={
+            <p className="text-center mt-5">
+              <b>Đã tải hết sản phẩm 😅</b>
             </p>
-          )}
-        </div>
+          }
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+            {displayedWatches.length > 0 ? (
+              displayedWatches.map((watch) => (
+                <div
+                  className="border border-gray-300 rounded p-3 bg-white shadow-sm group"
+                  key={watch.id}
+                >
+                  <img
+                    className="w-full h-64 object-scale-down mb-2 transition-transform duration-200 hover:-translate-y-1"
+                    src={watch.image}
+                    alt={watch.name}
+                  />
+                  <h3 className="text-lg font-semibold text-gray-800 my-2">
+                    <Link
+                      to={`/watch/${watch.id}`}
+                      className="transition-colors duration-300 group-hover:text-blue-500"
+                    >
+                      {watch.name}
+                    </Link>
+                  </h3>
+                  <p className="text-sm text-gray-600">{watch.size} mm</p>
+                  <p className="text-lg text-red-600 font-bold">
+                    {watch.price.toLocaleString()} ₫
+                  </p>
+                  <div className="flex items-center text-xs text-gray-600 mt-1">
+                    <span className="text-yellow-400 mr-1 text-lg">&#9733;</span>
+                    {watch.review} • Đã bán {watch.sold}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-center text-base text-gray-500 mt-5 col-span-full">
+                Không tìm thấy sản phẩm
+              </p>
+            )}
+          </div>
+        </InfiniteScroll>
       </div>
     </div>
   );
