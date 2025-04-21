@@ -1,6 +1,3 @@
-
-
-
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
@@ -14,6 +11,7 @@ import WatchAdd from "./components/WatchAdd";
 import WatchUpdate from "./components/WatchUpdate";
 import WatchDelete from "./components/WatchDelete";
 import Login from "./components/Login";
+import Register from "./components/Register"; // Import Register component
 import PrivateRoute from "./components/PrivateRoute";
 
 export default function App() {
@@ -22,8 +20,9 @@ export default function App() {
       <Router>
         <Navbar />
         <Routes>
-          {/* Public Route */}
+          {/* Public Routes */}
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} /> {/* Route for Register */}
 
           {/* Protected Routes */}
           <Route
@@ -31,13 +30,13 @@ export default function App() {
             element={
               <PrivateRoute>
                 <Routes>
-                <Route path="/" element={<WatchList />} />
-                <Route path="/find" element={<WatchFind />} />
-                <Route path="/sort" element={<WatchSort />} />
-                <Route path="/watch/:id" element={<WatchDetail />} />
-                <Route path="/add" element={<WatchAdd />} />
-                <Route path="/update" element={<WatchUpdate />} />
-                <Route path="/delete" element={<WatchDelete />} />
+                  <Route path="/" element={<WatchList />} />
+                  <Route path="/find" element={<WatchFind />} />
+                  <Route path="/sort" element={<WatchSort />} />
+                  <Route path="/watch/:id" element={<WatchDetail />} />
+                  <Route path="/add" element={<WatchAdd />} />
+                  <Route path="/update" element={<WatchUpdate />} />
+                  <Route path="/delete" element={<WatchDelete />} />
                   <Route path="*" element={<div><h2>404 Not Found</h2></div>} />
                 </Routes>
               </PrivateRoute>

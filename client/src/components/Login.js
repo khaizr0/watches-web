@@ -1,3 +1,4 @@
+// src/components/Login.jsx
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -55,6 +56,17 @@ const styles = {
     marginTop: '10px',
     fontSize: '14px',
     textAlign: 'center'
+  },
+  linkButton: {
+    marginTop: '10px',
+    padding: '10px',
+    backgroundColor: '#28a745',
+    color: '#fff',
+    fontSize: '16px',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    textAlign: 'center'
   }
 };
 
@@ -86,7 +98,7 @@ const Login = () => {
 
       if (response.status === 200) {
         login(response.data.user);
-        navigate('/');
+        navigate('/'); // Sau khi đăng nhập thành công, điều hướng về trang chủ
       }
     } catch (err) {
       console.error("Login failed:", err);
@@ -100,6 +112,10 @@ const Login = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleRegisterRedirect = () => {
+    navigate('/register'); // Chuyển hướng đến trang đăng ký
   };
 
   return (
@@ -142,6 +158,12 @@ const Login = () => {
           {isLoading ? 'Logging in...' : 'Login'}
         </button>
       </form>
+      <button
+        style={styles.linkButton}
+        onClick={handleRegisterRedirect}
+      >
+        Don't have an account? Register here
+      </button>
     </div>
   );
 };
