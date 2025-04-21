@@ -57,7 +57,7 @@ export default function WatchList() {
             <div className="border border-gray-300 rounded p-3 bg-white shadow-sm group" key={watch.id}>
               <img
                 className="w-full h-64 object-scale-down mb-2 transition-transform duration-200 hover:-translate-y-1"
-                src={watch.image}
+                src={`https://watches-server.up.railway.app/uploads/${watch.image}`}
                 alt={watch.name}
                 onError={(e) => { e.target.onerror = null; e.target.src = "/images/placeholder.png"; }}
               />

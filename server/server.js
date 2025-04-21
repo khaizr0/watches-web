@@ -251,7 +251,7 @@ app.get('/api/auth/status', authenticateToken, (req, res) => {
 // GET endpoint to retrieve all watches
 app.get('/api/watch', async (req, res) => {
   try {
-    const watches = await Watch.find({}); // assuming Watch is your Mongoose model
+    const watches = await Watch.find({});
     res.status(200).json(watches);
   } catch (error) {
     console.error("Lỗi khi lấy danh sách sản phẩm:", error);
@@ -289,24 +289,28 @@ app.post('/api/watch', upload.single('image'), async (req, res) => {
 
     const newId = `WATCH${typeCode}${orderStr}`;
 
-    const imageUrl = `https://watches-server.up.railway.app/uploads/${req.file.filename}`;
+    // Chỉ lưu tên file, không lưu đường dẫn đầy đủ
+    const imageName = req.file.filename;
 
     const newWatch = new Watch({
       id: newId,
       name,
-brand,
+      brand,
       type,
       material,
       size,
       price,
       review,
       sold,
-      image: imageUrl,
+      image: imageName,
     });
 
     await newWatch.save();
 
-    res.status(201).json(newWatch);
+    const watchWithFullImageUrl = newWatch.toObject();
+    watchWithFullImageUrl.imageUrl = `https://watches-server.up.railway.app/uploads/${imageName}`;
+    
+    res.status(201).json(watchWithFullImageUrl);
   } catch (error) {
     console.error("Lỗi khi tạo watch:", error);
     res.status(500).json({ error: "Internal server error." });
@@ -336,8 +340,8 @@ app.put('/api/watch/:id', upload.single('image'), async (req, res) => {
 
     // If a new image file is provided, update the image field
     if (req.file) {
-      const imageUrl = `https://watches-server.up.railway.app/uploads/${req.file.filename}`;
-      updateFields.image = imageUrl;
+      const imageName = req.file.filename;
+      updateFields.image = imageName;
     }
 
     const updatedWatch = await Watch.findOneAndUpdate(
@@ -350,7 +354,11 @@ app.put('/api/watch/:id', upload.single('image'), async (req, res) => {
       return res.status(404).json({ error: "Không tìm thấy sản phẩm với ID: " + req.params.id });
     }
 
-    res.status(200).json(updatedWatch);
+    // Trong response trả về, thêm đường dẫn đầy đủ để client hiển thị ảnh
+    const watchWithFullImageUrl = updatedWatch.toObject();
+    watchWithFullImageUrl.imageUrl = `https://watches-server.up.railway.app/uploads/${updatedWatch.image}`;
+
+    res.status(200).json(watchWithFullImageUrl);
   } catch (error) {
     console.error("Lỗi khi cập nhật watch:", error);
     res.status(500).json({ error: "Internal server error." });
