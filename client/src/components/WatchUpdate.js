@@ -241,7 +241,7 @@ export default function WatchUpdate() {
             >
               <img
                 className="w-full h-64 object-scale-down mb-2"
-                src={watch.image}
+                src={`https://watches-server.up.railway.app/uploads/${watch.image}`}
                 alt={watch.name}
               />
               <h3 className="text-lg font-semibold text-gray-800 my-2">{watch.name}</h3>

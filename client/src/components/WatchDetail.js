@@ -46,7 +46,7 @@ export default function WatchDetail() {
     <div className="max-w-lg mx-auto p-6 mt-10 bg-white border border-gray-300 rounded-lg shadow-lg text-center">
       <h1 className="text-2xl font-bold text-gray-800 mb-4">{watch.name}</h1>
       <img
-        src={watch.image.startsWith("http") ? watch.image : `/images/${watch.image}`}
+        src={`https://watches-server.up.railway.app/uploads/${watch.image}`}
         alt={watch.name}
         className="w-64 h-auto mx-auto rounded-md mb-4"
       />
