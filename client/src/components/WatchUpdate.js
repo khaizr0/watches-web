@@ -27,6 +27,7 @@ export default function WatchUpdate() {
   }, []);
 
   const handleEditClick = (watch) => {
+    console.log("Image filename:", watch.image);
     setEditingId(watch.id);
     setName(watch.name);
     setBrand(watch.brand);
