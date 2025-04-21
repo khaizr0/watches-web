@@ -306,20 +306,20 @@ app.post('/api/watch', upload.single('image'), async (req, res) => {
     return res.status(201).json(result);
 
   } catch (error) {
-    // 1. In stack trace để debug
+    // In stack trace để debug
     console.error(">>> [POST /api/watch] Error stack:", error.stack);
 
-    // 2. Bắt lỗi Multer (upload)
+    // Bắt lỗi Multer (upload)
     if (error instanceof multer.MulterError || error.name === 'MulterError') {
       return res.status(400).json({ error: "Lỗi khi upload hình ảnh." });
     }
 
-    // 3. Bắt lỗi duplicate key (id trùng)
+    // Bắt lỗi duplicate key (id trùng)
     if (error.code === 11000) {
       return res.status(400).json({ error: "Mã sản phẩm đã tồn tại, vui lòng thử lại." });
     }
 
-    // 4. Các lỗi khác
+    // Các lỗi khác
     return res.status(500).json({ error: "Internal server error." });
   }
 });

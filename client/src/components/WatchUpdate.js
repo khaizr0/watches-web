@@ -36,7 +36,7 @@ export default function WatchUpdate() {
     setPrice(watch.price);
     setReview(watch.review);
     setSold(watch.sold);
-    setCurrentImage(watch.image);
+    setCurrentImage(`https://watches-server.up.railway.app/uploads/${watch.image}`);
     setImage(null);
   };
 
