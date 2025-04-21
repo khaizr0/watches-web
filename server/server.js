@@ -260,10 +260,12 @@ app.get('/api/watch', async (req, res) => {
 });
 
 //Tạo mới sản phẩm,
+
 app.post('/api/watch', upload.single('image'), async (req, res) => {
   try {
     const { name, brand, type, material, size, price, review, sold } = req.body;
 
+    // Validate input
     if (!name || !brand || !type || !material || !size || !price || !review || !sold) {
       return res.status(400).json({ error: "Vui lòng nhập đầy đủ thông tin." });
     }
@@ -271,29 +273,21 @@ app.post('/api/watch', upload.single('image'), async (req, res) => {
       return res.status(400).json({ error: "Vui lòng chọn hình ảnh." });
     }
 
-    // Lấy số thứ tự mới: đếm số sản phẩm hiện có
+    // Sinh ID mới dựa trên count
     const count = await Watch.countDocuments();
-    const newOrder = count + 1;
-    const orderStr = String(newOrder).padStart(3, '0');
-
+    const orderStr = String(count + 1).padStart(3, '0');
     let typeCode = "";
-    if (type.toLowerCase() === 'quartz') {
-      typeCode = 'QUA';
-    } else if (type.toLowerCase() === 'automatic') {
-      typeCode = 'AUT';
-    } else if (type.toLowerCase() === 'smartwatch') {
-      typeCode = 'SMA';
-    } else {
-      return res.status(400).json({ error: "Loại đồng hồ phải là Quartz, Automatic hoặc Smartwatch." });
-    }
+    if (type.toLowerCase() === 'quartz')      typeCode = 'QUA';
+    else if (type.toLowerCase() === 'automatic') typeCode = 'AUT';
+    else if (type.toLowerCase() === 'smartwatch') typeCode = 'SMA';
+    else return res.status(400).json({ error: "Loại phải là Quartz, Automatic hoặc Smartwatch." });
 
     const newId = `WATCH${typeCode}${orderStr}`;
-
-    // Chỉ lưu tên file, không lưu đường dẫn đầy đủ
     const imageName = req.file.filename;
 
+    // Tạo và lưu Watch mới
     const newWatch = new Watch({
-      id: newId,
+      id:       newId,
       name,
       brand,
       type,
@@ -302,18 +296,31 @@ app.post('/api/watch', upload.single('image'), async (req, res) => {
       price,
       review,
       sold,
-      image: imageName,
+      image:    imageName,
     });
-
     await newWatch.save();
 
-    const watchWithFullImageUrl = newWatch.toObject();
-    watchWithFullImageUrl.imageUrl = `https://watches-server.up.railway.app/uploads/${imageName}`;
-    
-    res.status(201).json(watchWithFullImageUrl);
+    // Trả về client kèm URL đầy đủ
+    const result = newWatch.toObject();
+    result.imageUrl = `https://watches-server.up.railway.app/uploads/${imageName}`;
+    return res.status(201).json(result);
+
   } catch (error) {
-    console.error("Lỗi khi tạo watch:", error);
-    res.status(500).json({ error: "Internal server error." });
+    // 1. In stack trace để debug
+    console.error(">>> [POST /api/watch] Error stack:", error.stack);
+
+    // 2. Bắt lỗi Multer (upload)
+    if (error instanceof multer.MulterError || error.name === 'MulterError') {
+      return res.status(400).json({ error: "Lỗi khi upload hình ảnh." });
+    }
+
+    // 3. Bắt lỗi duplicate key (id trùng)
+    if (error.code === 11000) {
+      return res.status(400).json({ error: "Mã sản phẩm đã tồn tại, vui lòng thử lại." });
+    }
+
+    // 4. Các lỗi khác
+    return res.status(500).json({ error: "Internal server error." });
   }
 });
 
