@@ -9,7 +9,7 @@ export default function WatchDetail() {
   useEffect(() => {
     const fetchWatch = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/watch/${id}`);
+        const response = await fetch(`https://watches-server.up.railway.app/api/watch/${id}`);
         if (response.ok) {
           const data = await response.json();
           setWatch(data);

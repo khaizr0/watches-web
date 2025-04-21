@@ -5,7 +5,7 @@ export default function WatchDelete() {
 
   // Load danh sách sản phẩm từ server thông qua GET endpoint
   useEffect(() => {
-    fetch("http://localhost:5000/api/watch")
+    fetch("https://watches-server.up.railway.app/api/watch")
       .then((res) => {
         if (!res.ok) throw new Error("Không thể lấy danh sách sản phẩm");
         return res.json();
@@ -18,7 +18,7 @@ export default function WatchDelete() {
   const handleRemove = async (id) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
       try {
-        const res = await fetch(`http://localhost:5000/api/watch/${id}`, {
+        const res = await fetch(`https://watches-server.up.railway.app/api/watch/${id}`, {
           method: "DELETE",
         });
         if (!res.ok) {

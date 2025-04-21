@@ -83,7 +83,7 @@ const Register = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/auth/register',
+        'https://watches-server.up.railway.app/api/auth/register',
         { username, password }
       );
 

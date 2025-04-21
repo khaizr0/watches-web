@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = 'https://watches-server.up.railway.app';
 
 export default function WatchSort() {
   const [watches, setWatches] = useState([]);

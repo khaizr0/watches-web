@@ -17,7 +17,7 @@ export default function WatchUpdate() {
   const [currentImage, setCurrentImage] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/watch")
+    fetch("https://watches-server.up.railway.app/api/watch")
       .then((res) => {
         if (!res.ok) throw new Error("Network response not ok");
         return res.json();
@@ -94,7 +94,7 @@ export default function WatchUpdate() {
     if (image) formData.append("image", image);
 
     try {
-      const res = await fetch(`http://localhost:5000/api/watch/${editingId}`, {
+      const res = await fetch(`https://watches-server.up.railway.app/api/watch/${editingId}`, {
         method: "PUT",
         body: formData,
       });

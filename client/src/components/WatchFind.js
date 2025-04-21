@@ -10,7 +10,7 @@ export default function WatchFind() {
   const [displayedWatches, setDisplayedWatches] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/watch")
+    fetch("https://watches-server.up.railway.app/api/watch")
       .then(res => {
         if (!res.ok) throw new Error("Lỗi mạng khi lấy watch");
         return res.json();

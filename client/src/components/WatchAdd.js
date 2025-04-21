@@ -22,7 +22,7 @@ export default function WatchAdd() {
   useEffect(() => {
     const loadWatches = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/watch");
+        const response = await fetch("https://watches-server.up.railway.app/api/watch");
         if (response.ok) {
           const data = await response.json();
           setWatchList(data);
@@ -94,7 +94,7 @@ export default function WatchAdd() {
     data.append("image", image);
 
     try {
-      const response = await fetch("http://localhost:5000/api/watch", {
+      const response = await fetch("https://watches-server.up.railway.app/api/watch", {
         method: "POST",
         body: data,
       });
