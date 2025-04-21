@@ -1,4 +1,3 @@
-// src/components/Login.jsx
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -91,7 +90,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        'http://watches-web-production.up.railway.app/api/auth/login',
+        'https://watches-server.up.railway.app/api/auth/login',
         { username, password },
         { withCredentials: true }
       );

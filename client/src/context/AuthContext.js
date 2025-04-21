@@ -1,4 +1,3 @@
-// src/context/AuthContext.js
 import React, { createContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
@@ -11,7 +10,7 @@ export const AuthProvider = ({ children }) => {
     const checkAuthStatus = useCallback(async () => {
         setIsLoading(true);
         try {
-            const response = await axios.get('http://localhost:5000/api/auth/status', {
+            const response = await axios.get('https://watches-server.up.railway.app/api/auth/status', {
                 withCredentials: true,
             });
             if (response.status === 200 && response.data.isAuthenticated) {
@@ -38,7 +37,7 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         setIsLoading(true);
         try {
-            await axios.post('http://localhost:5000/api/auth/logout', {}, {
+            await axios.post('https://watches-server.up.railway.app/api/auth/logout', {}, {
                 withCredentials: true,
             });
         } catch (error) {

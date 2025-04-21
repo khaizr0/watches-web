@@ -110,7 +110,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // --- Middleware ---
 app.use(cors({
-  origin: 'http://client-watches-production.up.railway.app', 
+  origin: 'https://watches.up.railway.app', 
   credentials: true
 }));
 app.use(express.json());
@@ -289,7 +289,7 @@ app.post('/api/watch', upload.single('image'), async (req, res) => {
 
     const newId = `WATCH${typeCode}${orderStr}`;
 
-    const imageUrl = `http://watches-web-production.up.railway.app/uploads/${req.file.filename}`;
+    const imageUrl = `https://watches-server.up.railway.app/uploads/${req.file.filename}`;
 
     const newWatch = new Watch({
       id: newId,
@@ -336,7 +336,7 @@ app.put('/api/watch/:id', upload.single('image'), async (req, res) => {
 
     // If a new image file is provided, update the image field
     if (req.file) {
-      const imageUrl = `http://watches-web-production.up.railway.app/uploads/${req.file.filename}`;
+      const imageUrl = `https://watches-server.up.railway.app/uploads/${req.file.filename}`;
       updateFields.image = imageUrl;
     }
 
