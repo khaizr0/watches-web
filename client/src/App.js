@@ -11,7 +11,7 @@ import WatchAdd from "./components/WatchAdd";
 import WatchUpdate from "./components/WatchUpdate";
 import WatchDelete from "./components/WatchDelete";
 import Login from "./components/Login";
-import Register from "./components/Register"; // Import Register component
+import Register from "./components/Register";
 import PrivateRoute from "./components/PrivateRoute";
 
 export default function App() {
